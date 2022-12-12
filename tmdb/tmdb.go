@@ -443,26 +443,19 @@ func CheckAPIKey() {
 
 func tmdbCheck(key string) bool {
 	var result *Entity
-
-	urlValues := napping.Params{
-		"api_key": key,
-	}.AsUrlValues()
-
-	resp, err := napping.Get(
-		tmdbEndpoint+"/movie/550",
-		&urlValues,
-		&result,
-		nil,
-	)
+	err := MakeRequest(APIRequest{
+		URL: tmdbEndpoint + "/movie/550",
+		Params: napping.Params{
+			"api_key": key,
+		}.AsUrlValues(),
+		Result: &result,
+	})
 
 	if err != nil {
 		log.Error(err.Error())
 		xbmc.Notify("Elementum", "TMDB check failed, check your logs.", config.AddonIcon())
 		return false
-	} else if resp.Status() != 200 {
-		return false
 	}
-
 	return true
 }
 
